@@ -12,9 +12,9 @@ namespace Game.InputLogic
     internal class InputArrows : BaseInputView
     {
         [SerializeField] private float _inputMultiplier = 25f;
-        float dir = 0;
-        private Button leftButton;
-        private Button rightButton;
+        //float dir = 0;
+        //private Button leftButton;
+        //private Button rightButton;
 
         private void Start() =>
             UpdateManager.SubscribeToUpdate(Move);
@@ -22,24 +22,25 @@ namespace Game.InputLogic
         private void OnDestroy() =>
            UpdateManager.UnsubscribeFromUpdate(Move);
 
-        private void LoadPrefab()
-        {
-            ResourcePath _resourcePath = new ResourcePath("Prefabs/ArrowsInput");
-            Transform placeForUi = GameObject.Find("PlaceForUi").transform;
-            GameObject prefab = ResourcesLoader.LoadPrefab(_resourcePath);
-            Object.Instantiate(prefab, placeForUi, false);
-        }
+        //private void LoadPrefab()
+        //{
+        //    ResourcePath _resourcePath = new ResourcePath("Prefabs/ArrowsInput");
+        //    Transform placeForUi = GameObject.Find("PlaceForUi").transform;
+        //    GameObject prefab = ResourcesLoader.LoadPrefab(_resourcePath);
+        //    Object.Instantiate(prefab, placeForUi, false);
+        //}
 
-        private void InitButtons()
-        {
-            leftButton = GameObject.Find("LeftArrow").GetComponent<Button>();
-            rightButton = GameObject.Find("RightArrow").GetComponent<Button>();
-        }
+        //private void InitButtons()
+        //{
+        //    leftButton = GameObject.Find("LeftArrow").GetComponent<Button>();
+        //    rightButton = GameObject.Find("RightArrow").GetComponent<Button>();
+        //}
 
 
         private void Move()
         {
-            float moveValue = _speed  * _inputMultiplier * Time.deltaTime;
+            Vector3 direction = CalcDirection();
+            float moveValue = _speed  * _inputMultiplier * Time.deltaTime * direction.x;
 
             float abs = Mathf.Abs(moveValue);
             float sign = Mathf.Sign(moveValue);
@@ -50,6 +51,12 @@ namespace Game.InputLogic
                 OnLeftMove(abs);
         }
 
-
+        private Vector3 CalcDirection()
+        {
+            Vector3 direction = Vector3.zero;
+            direction.x = Input.GetAxis("Horizontal");
+            direction.y = Input.GetAxis("Vertical");
+            return direction;
+        }
     }
 }
